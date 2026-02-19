@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - SchoolTimetable{% endblock %}
+
+{% block content %}
+<h1>Welcome, {{ current_user.name }}!</h1>
+<p class="text-muted">{{ current_user.location }}</p>
+
+<div class="row mt-4">
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h2>{{ stats.teachers }}</h2>
+                <p class="card-text">Teachers</p>
+                <a href="{{ url_for('school.teachers') }}" class="btn btn-sm btn-primary">Manage</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h2>{{ stats.classes }}</h2>
+                <p class="card-text">Classes</p>
+                <a href="{{ url_for('school.classes') }}" class="btn btn-sm btn-primary">Manage</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h2>{{ stats.subjects }}</h2>
+                <p class="card-text">Subjects</p>
+                <a href="{{ url_for('school.subjects') }}" class="btn btn-sm btn-primary">Manage</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h2>{{ stats.timetables }}</h2>
+                <p class="card-text">Timetables</p>
+                <a href="{{ url_for('timetable.list_timetables') }}" class="btn btn-sm btn-primary">View</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5>Setup Checklist</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li><input type="checkbox" {% if stats.teachers > 0 %}checked{% endif %} disabled> Add Teachers</li>
+                    <li><input type="checkbox" {% if stats.classes > 0 %}checked{% endif %} disabled> Add Classes</li>
+                    <li><input type="checkbox" {% if stats.subjects > 0 %}checked{% endif %} disabled> Add Subjects</li>
+                    <li><input type="checkbox" disabled> Define Time Slots</li>
+                    <li><input type="checkbox" disabled> Assign Teachers to Subjects</li>
+                    <li><input type="checkbox" disabled> Configure Concurrent Subjects (optional)</li>
+                    <li><input type="checkbox" disabled> Generate Timetable</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5>Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <a href="{{ url_for('school.teachers') }}" class="btn btn-outline-primary btn-block mb-2">Manage Teachers</a>
+                <a href="{{ url_for('school.classes') }}" class="btn btn-outline-primary btn-block mb-2">Manage Classes</a>
+                <a href="{{ url_for('school.subjects') }}" class="btn btn-outline-primary btn-block mb-2">Manage Subjects</a>
+                <a href="{{ url_for('school.timeslots') }}" class="btn btn-outline-primary btn-block mb-2">Configure Time Slots</a>
+                <a href="{{ url_for('school.assignments') }}" class="btn btn-outline-primary btn-block mb-2">Assign Teachers</a>
+                <a href="{{ url_for('timetable.generate') }}" class="btn btn-success btn-block">Generate Timetable</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

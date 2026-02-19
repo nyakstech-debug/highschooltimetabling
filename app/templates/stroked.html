@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+
+{% block title %}Stroked Subjects - SchoolTimetable{% endblock %}
+
+{% block content %}
+<h2>Stroked Subjects Management</h2>
+<p class="text-muted">Define groups of alternative subjects. Students choose ONE subject from each group (e.g., History OR Geography). Subjects in the same group automatically run concurrently.</p>
+<div class="alert alert-info mt-2">
+    <strong>Note:</strong> When you create a stroked group, all subjects in that group are automatically marked as concurrent. This allows them to be scheduled at the same time, since students will only be taking one subject from the group.
+</div>
+
+<!-- Nav Tabs -->
+<ul class="nav nav-tabs mt-4 mb-4" id="strokedTabs" role="tablist">
+    <li class="nav-item">
+        <a class="nav-link active" id="grade-tab" data-toggle="tab" href="#grade" role="tab">
+            📚 Grade 10-12 Stroked Groups
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" id="form-tab" data-toggle="tab" href="#form" role="tab">
+            📖 Form 3-4 Stroked Groups
+        </a>
+    </li>
+</ul>
+
+<!-- Tab Content -->
+<div class="tab-content" id="strokedTabContent">
+    <!-- Grade 10-12 Tab -->
+    <div class="tab-pane fade show active" id="grade" role="tabpanel">
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5>Create Grade 10-12 Stroked Group</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST">
+                            <input type="hidden" name="level" value="grade10-12">
+                            
+                            <div class="form-group">
+                                <label for="group_name_grade">Group Name</label>
+                                <input type="text" class="form-control" id="group_name_grade" name="group_name" placeholder="e.g., History/Geography" required>
+                                <small class="form-text text-muted">Name for this stroked group</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Select Subjects in This Group</label>
+                                <div class="form-check">
+                                    {% for subject in grade_subjects %}
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="subject_ids" value="{{ subject.id }}" id="grade_subject_{{ subject.id }}">
+                                        <label class="form-check-label" for="grade_subject_{{ subject.id }}">
+                                            {{ subject.name }} ({{ subject.code }})
+                                        </label>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                <small class="form-text text-muted">Students will choose ONE of these subjects</small>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary btn-block">Create Group</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5>Grade 10-12 Stroked Groups</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if grade_groups %}
+                        <div class="list-group">
+                            {% for group in grade_groups %}
+                            <div class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h6 class="mb-1"><strong>{{ group.group_name }}</strong></h6>
+                                        <small class="text-muted">
+                                            {% for gs in group.group_subjects %}
+                                                {{ gs.subject.code }}{% if not loop.last %}, {% endif %}
+                                            {% endfor %}
+                                        </small>
+                                    </div>
+                                    <form method="POST" action="{{ url_for('school.delete_stroked_group', group_id=group.id) }}" style="display:inline;">
+                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this group?')">Delete</button>
+                                    </form>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <p class="text-muted text-center py-4">No stroked groups defined yet.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Form 3-4 Tab -->
+    <div class="tab-pane fade" id="form" role="tabpanel">
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <h5>Create Form 3-4 Stroked Group</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST">
+                            <input type="hidden" name="level" value="form3-4">
+                            
+                            <div class="form-group">
+                                <label for="group_name_form">Group Name</label>
+                                <input type="text" class="form-control" id="group_name_form" name="group_name" placeholder="e.g., Literature/Drama" required>
+                                <small class="form-text text-muted">Name for this stroked group</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Select Subjects in This Group</label>
+                                <div class="form-check">
+                                    {% for subject in form_subjects %}
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="subject_ids" value="{{ subject.id }}" id="form_subject_{{ subject.id }}">
+                                        <label class="form-check-label" for="form_subject_{{ subject.id }}">
+                                            {{ subject.name }} ({{ subject.code }})
+                                        </label>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                <small class="form-text text-muted">Students will choose ONE of these subjects</small>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-success btn-block">Create Group</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <h5>Form 3-4 Stroked Groups</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if form_groups %}
+                        <div class="list-group">
+                            {% for group in form_groups %}
+                            <div class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h6 class="mb-1"><strong>{{ group.group_name }}</strong></h6>
+                                        <small class="text-muted">
+                                            {% for gs in group.group_subjects %}
+                                                {{ gs.subject.code }}{% if not loop.last %}, {% endif %}
+                                            {% endfor %}
+                                        </small>
+                                    </div>
+                                    <form method="POST" action="{{ url_for('school.delete_stroked_group', group_id=group.id) }}" style="display:inline;">
+                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this group?')">Delete</button>
+                                    </form>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <p class="text-muted text-center py-4">No stroked groups defined yet.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .nav-tabs {
+        border-bottom: 2px solid #dee2e6;
+    }
+    
+    .nav-tabs .nav-link {
+        color: #6c757d;
+        border: none;
+        border-bottom: 3px solid transparent;
+        padding: 0.75rem 1.5rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    
+    .nav-tabs .nav-link:hover {
+        color: #007bff;
+        border-bottom-color: #007bff;
+    }
+    
+    .nav-tabs .nav-link.active {
+        color: #007bff;
+        border-bottom-color: #007bff;
+        background-color: transparent;
+    }
+    
+    .list-group-item {
+        border-left: 4px solid #007bff;
+        margin-bottom: 8px;
+    }
+    
+    .form-check {
+        margin-bottom: 8px;
+    }
+</style>
+{% endblock %}

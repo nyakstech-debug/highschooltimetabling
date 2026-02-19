@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+
+{% block title %}SchoolTimetable - Intelligent Timetabling for Schools{% endblock %}
+
+{% block content %}
+<!-- Animated Background -->
+<div class="animated-bg">
+    <div class="grid-pattern"></div>
+    <div class="floating-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+        <div class="shape shape-4"></div>
+    </div>
+</div>
+
+<!-- Hero Section - One Screen View -->
+<section class="hero-section full-screen">
+    <div class="hero-wrapper">
+        <div class="hero-content">
+            <h1 class="hero-title">SchoolTimetable</h1>
+            <p class="hero-subtitle">Smart Timetable Generation</p>
+            <p class="hero-description">Create fair, conflict-free timetables instantly for your school</p>
+            
+            {% if not current_user.is_authenticated %}
+            <div class="hero-buttons">
+                <a href="{{ url_for('auth.register') }}" class="btn btn-hero btn-primary">Get Started</a>
+                <a href="{{ url_for('auth.login') }}" class="btn btn-hero btn-secondary">Sign In</a>
+            </div>
+            {% else %}
+            <div class="hero-buttons">
+                <a href="{{ url_for('school.dashboard') }}" class="btn btn-hero btn-primary">Dashboard</a>
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="features-highlights">
+            <div class="highlight-item">
+                <div class="highlight-icon">⚡</div>
+                <span>Instant Generation</span>
+            </div>
+            <div class="highlight-item">
+                <div class="highlight-icon">✓</div>
+                <span>Conflict-Free</span>
+            </div>
+            <div class="highlight-item">
+                <div class="highlight-icon">🎯</div>
+                <span>Smart Constraints</span>
+            </div>
+            <div class="highlight-item">
+                <div class="highlight-icon">📱</div>
+                <span>Responsive</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="scroll-indicator">
+        <span>Scroll to explore</span>
+        <div class="arrow-down"></div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section">
+    <div class="features-compact">
+        <h2>Why Schools Choose Us</h2>
+        
+        <div class="features-grid-compact">
+            <div class="feature-item">
+                <div class="feature-num">01</div>
+                <h3>Automatic Scheduling</h3>
+                <p>Fair lesson distribution respecting all constraints</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-num">02</div>
+                <h3>No Conflicts</h3>
+                <p>Teachers and classes never double-booked</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-num">03</div>
+                <h3>Easy Setup</h3>
+                <p>Configure in minutes, generate in seconds</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-num">04</div>
+                <h3>Multiple Views</h3>
+                <p>Class, teacher, and school timetables</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-num">05</div>
+                <h3>Smart Constraints</h3>
+                <p>Double lessons and concurrent subjects</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-num">06</div>
+                <h3>Level-Specific</h3>
+                <p>Grade 10-12 and Form 3-4 courses</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Quick Process -->
+<section class="quick-process">
+    <h2>4 Steps to Success</h2>
+    <div class="process-timeline">
+        <div class="process-step">
+            <div class="process-icon">1</div>
+            <h4>Setup</h4>
+            <small>Teachers & Classes</small>
+        </div>
+        <div class="process-line"></div>
+        <div class="process-step">
+            <div class="process-icon">2</div>
+            <h4>Configure</h4>
+            <small>Time Slots</small>
+        </div>
+        <div class="process-line"></div>
+        <div class="process-step">
+            <div class="process-icon">3</div>
+            <h4>Assign</h4>
+            <small>Teacher-Subject</small>
+        </div>
+        <div class="process-line"></div>
+        <div class="process-step">
+            <div class="process-icon">4</div>
+            <h4>Generate</h4>
+            <small>Your Timetable</small>
+        </div>
+    </div>
+</section>
+
+<!-- Final CTA -->
+<section class="final-cta">
+    {% if not current_user.is_authenticated %}
+    <h2>Ready to transform your school's timetabling?</h2>
+    <p>Join hundreds of schools across Kenya</p>
+    <a href="{{ url_for('auth.register') }}" class="btn btn-hero btn-primary">Create Free Account</a>
+    {% else %}
+    <p>Welcome back! Access your dashboard to continue.</p>
+    <a href="{{ url_for('school.dashboard') }}" class="btn btn-hero btn-primary">Go to Dashboard</a>
+    {% endif %}
+</section>
+{% endblock %}

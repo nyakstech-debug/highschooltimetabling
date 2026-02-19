@@ -1,0 +1,227 @@
+{% extends "base.html" %}
+
+{% block title %}Subjects - SchoolTimetable{% endblock %}
+
+{% block content %}
+<h2>Subjects Management</h2>
+<p class="text-muted">Manage subjects separately for Grade 10-12 and Form 3-4</p>
+
+<!-- Nav Tabs -->
+<ul class="nav nav-tabs mt-4 mb-4" id="subjectTabs" role="tablist">
+    <li class="nav-item">
+        <a class="nav-link active" id="grade-tab" data-toggle="tab" href="#grade" role="tab">
+            📚 Grade 10, 11, 12 Subjects ({{ grade_subjects|length }})
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" id="form-tab" data-toggle="tab" href="#form" role="tab">
+            📖 Form 3, 4 Subjects ({{ form_subjects|length }})
+        </a>
+    </li>
+</ul>
+
+<!-- Tab Content -->
+<div class="tab-content" id="subjectTabContent">
+    <!-- Grade 10-12 Tab -->
+    <div class="tab-pane fade show active" id="grade" role="tabpanel">
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5>Add Grade 10-12 Subject</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST">
+                            <input type="hidden" name="level" value="grade10-12">
+                            
+                            <div class="form-group">
+                                <label for="name_grade">Subject Name</label>
+                                <input type="text" class="form-control" id="name_grade" name="name" placeholder="e.g., Mathematics" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="code_grade">Subject Code</label>
+                                <input type="text" class="form-control" id="code_grade" name="code" placeholder="e.g., MATH" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="max_lessons_grade">Total Lessons Per Week</label>
+                                <input type="number" class="form-control" id="max_lessons_grade" name="max_lessons_per_week" value="4" min="1" max="10" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="double_lessons_grade">Double Lessons Per Week</label>
+                                <input type="number" class="form-control" id="double_lessons_grade" name="double_lessons_per_week" value="0" min="0" max="5">
+                                <small class="form-text text-muted">Consecutive double periods</small>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">Add Subject</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5>Grade 10-12 Subjects</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if grade_subjects %}
+                        <div class="table-responsive">
+                            <table class="table table-sm table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Code</th>
+                                        <th>Lessons</th>
+                                        <th>Double</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for subject in grade_subjects %}
+                                    <tr>
+                                        <td><strong>{{ subject.name }}</strong></td>
+                                        <td>{{ subject.code }}</td>
+                                        <td>{{ subject.max_lessons_per_week }}/week</td>
+                                        <td>
+                                            {% if subject.double_lessons_per_week > 0 %}
+                                                <span class="badge badge-info">{{ subject.double_lessons_per_week }}</span>
+                                            {% else %}
+                                                <span class="text-muted">-</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <a href="{{ url_for('school.edit_subject', subject_id=subject.id) }}" class="btn btn-sm btn-primary">Edit</a>
+                                            <form method="POST" action="{{ url_for('school.delete_subject', subject_id=subject.id) }}" style="display:inline;">
+                                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this subject?')">Delete</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <p class="text-muted text-center py-4">No Grade 10-12 subjects added yet.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Form 3-4 Tab -->
+    <div class="tab-pane fade" id="form" role="tabpanel">
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <h5>Add Form 3-4 Subject</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST">
+                            <input type="hidden" name="level" value="form3-4">
+                            
+                            <div class="form-group">
+                                <label for="name_form">Subject Name</label>
+                                <input type="text" class="form-control" id="name_form" name="name" placeholder="e.g., English Language" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="code_form">Subject Code</label>
+                                <input type="text" class="form-control" id="code_form" name="code" placeholder="e.g., ENG" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="max_lessons_form">Total Lessons Per Week</label>
+                                <input type="number" class="form-control" id="max_lessons_form" name="max_lessons_per_week" value="4" min="1" max="10" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="double_lessons_form">Double Lessons Per Week</label>
+                                <input type="number" class="form-control" id="double_lessons_form" name="double_lessons_per_week" value="0" min="0" max="5">
+                                <small class="form-text text-muted">Consecutive double periods</small>
+                            </div>
+                            <button type="submit" class="btn btn-success btn-block">Add Subject</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <h5>Form 3-4 Subjects</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if form_subjects %}
+                        <div class="table-responsive">
+                            <table class="table table-sm table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Code</th>
+                                        <th>Lessons</th>
+                                        <th>Double</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for subject in form_subjects %}
+                                    <tr>
+                                        <td><strong>{{ subject.name }}</strong></td>
+                                        <td>{{ subject.code }}</td>
+                                        <td>{{ subject.max_lessons_per_week }}/week</td>
+                                        <td>
+                                            {% if subject.double_lessons_per_week > 0 %}
+                                                <span class="badge badge-info">{{ subject.double_lessons_per_week }}</span>
+                                            {% else %}
+                                                <span class="text-muted">-</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <a href="{{ url_for('school.edit_subject', subject_id=subject.id) }}" class="btn btn-sm btn-primary">Edit</a>
+                                            <form method="POST" action="{{ url_for('school.delete_subject', subject_id=subject.id) }}" style="display:inline;">
+                                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this subject?')">Delete</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <p class="text-muted text-center py-4">No Form 3-4 subjects added yet.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .nav-tabs {
+        border-bottom: 2px solid #dee2e6;
+    }
+    
+    .nav-tabs .nav-link {
+        color: #6c757d;
+        border: none;
+        border-bottom: 3px solid transparent;
+        padding: 0.75rem 1.5rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    
+    .nav-tabs .nav-link:hover {
+        color: #007bff;
+        border-bottom-color: #007bff;
+    }
+    
+    .nav-tabs .nav-link.active {
+        color: #007bff;
+        border-bottom-color: #007bff;
+        background-color: transparent;
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: #f8f9fa;
+    }
+</style>
+{% endblock %}

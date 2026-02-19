@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Timetable History - SchoolTimetable{% endblock %}
+
+{% block content %}
+<h2>Timetable History</h2>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>All Generated Timetables</h5>
+            </div>
+            <div class="card-body">
+                {% if timetables %}
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Generated At</th>
+                            <th>Lessons Count</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for timetable in timetables %}
+                        <tr>
+                            <td>#{{ timetable.id }}</td>
+                            <td>{{ timetable.generated_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                            <td>{{ timetable.lessons|length }}</td>
+                            <td>
+                                {% if timetable.is_active %}
+                                <span class="badge badge-success">Active</span>
+                                {% else %}
+                                <span class="badge badge-secondary">Inactive</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{{ url_for('timetable.view_timetable', timetable_id=timetable.id) }}" class="btn btn-sm btn-primary">
+                                    View
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p class="text-muted">No timetables generated yet. <a href="{{ url_for('timetable.generate') }}">Generate one now</a></p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mt-4">
+    <a href="{{ url_for('timetable.generate') }}" class="btn btn-success">Generate New Timetable</a>
+    <a href="{{ url_for('school.dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+</div>
+{% endblock %}

@@ -1,0 +1,245 @@
+{% extends "base.html" %}
+
+{% block title %}Time Slots - SchoolTimetable{% endblock %}
+
+{% block content %}
+<h2>Time Slots Management</h2>
+<p class="text-muted">Configure the school bell schedule (same for all days Monday-Friday). Different levels can have different schedules.</p>
+
+<!-- Nav Tabs -->
+<ul class="nav nav-tabs mt-4 mb-4" id="timeslotTabs" role="tablist">
+    <li class="nav-item">
+        <a class="nav-link active" id="grade-tab" data-toggle="tab" href="#grade" role="tab">
+            📚 Grade 10-12 Schedule
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" id="form-tab" data-toggle="tab" href="#form" role="tab">
+            📖 Form 3-4 Schedule
+        </a>
+    </li>
+</ul>
+
+<!-- Tab Content -->
+<div class="tab-content" id="timeslotTabContent">
+    <!-- Grade 10-12 Tab -->
+    <div class="tab-pane fade show active" id="grade" role="tabpanel">
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5>Add Grade 10-12 Period</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST">
+                            <input type="hidden" name="level" value="grade10-12">
+                            
+                            <div class="form-group">
+                                <label for="period_grade">Period Number</label>
+                                <input type="number" class="form-control" id="period_grade" name="period" min="1" placeholder="e.g., 1, 2, 3..." required>
+                                <small class="form-text text-muted">Applies to all days: Monday - Friday</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="start_time_grade">Start Time</label>
+                                <input type="time" class="form-control" id="start_time_grade" name="start_time" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="end_time_grade">End Time</label>
+                                <input type="time" class="form-control" id="end_time_grade" name="end_time" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="slot_type_grade">Time Slot Type</label>
+                                <select class="form-control" id="slot_type_grade" name="slot_type" required>
+                                    <option value="lesson">Lesson Period</option>
+                                    <option value="break">Break</option>
+                                    <option value="tea_break">Tea Break</option>
+                                    <option value="lunch_break">Lunch Break</option>
+                                </select>
+                                <small class="form-text text-muted">Select 'Lesson Period' for teaching slots, or choose a break type</small>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary btn-block">Add Period</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5>Grade 10-12 Weekly Schedule ({{ grade_timeslots|length }} periods)</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if grade_timeslots %}
+                        <div class="table-responsive">
+                            <table class="table table-sm table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Period</th>
+                                        <th>Time</th>
+                                        <th>Type</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for slot in grade_timeslots %}
+                                    <tr>
+                                        <td><strong>{{ slot.period }}</strong></td>
+                                        <td>{{ slot.start_time }} - {{ slot.end_time }}</td>
+                                        <td>
+                                            {% if slot.slot_type == 'lesson' %}
+                                                <span class="badge badge-success">Lesson</span>
+                                            {% elif slot.slot_type == 'break' %}
+                                                <span class="badge badge-warning">Break</span>
+                                            {% elif slot.slot_type == 'tea_break' %}
+                                                <span class="badge badge-info">Tea Break</span>
+                                            {% elif slot.slot_type == 'lunch_break' %}
+                                                <span class="badge badge-danger">Lunch Break</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <form method="POST" action="{{ url_for('school.delete_timeslot', slot_id=slot.id) }}" style="display:inline;">
+                                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this period?')">Delete</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <p class="text-muted text-center py-4">No periods defined yet.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Form 3-4 Tab -->
+    <div class="tab-pane fade" id="form" role="tabpanel">
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <h5>Add Form 3-4 Period</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST">
+                            <input type="hidden" name="level" value="form3-4">
+                            
+                            <div class="form-group">
+                                <label for="period_form">Period Number</label>
+                                <input type="number" class="form-control" id="period_form" name="period" min="1" placeholder="e.g., 1, 2, 3..." required>
+                                <small class="form-text text-muted">Applies to all days: Monday - Friday</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="start_time_form">Start Time</label>
+                                <input type="time" class="form-control" id="start_time_form" name="start_time" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="end_time_form">End Time</label>
+                                <input type="time" class="form-control" id="end_time_form" name="end_time" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="slot_type_form">Time Slot Type</label>
+                                <select class="form-control" id="slot_type_form" name="slot_type" required>
+                                    <option value="lesson">Lesson Period</option>
+                                    <option value="break">Break</option>
+                                    <option value="tea_break">Tea Break</option>
+                                    <option value="lunch_break">Lunch Break</option>
+                                </select>
+                                <small class="form-text text-muted">Select 'Lesson Period' for teaching slots, or choose a break type</small>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-success btn-block">Add Period</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <h5>Form 3-4 Weekly Schedule ({{ form_timeslots|length }} periods)</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if form_timeslots %}
+                        <div class="table-responsive">
+                            <table class="table table-sm table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Period</th>
+                                        <th>Time</th>
+                                        <th>Type</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for slot in form_timeslots %}
+                                    <tr>
+                                        <td><strong>{{ slot.period }}</strong></td>
+                                        <td>{{ slot.start_time }} - {{ slot.end_time }}</td>
+                                        <td>
+                                            {% if slot.slot_type == 'lesson' %}
+                                                <span class="badge badge-success">Lesson</span>
+                                            {% elif slot.slot_type == 'break' %}
+                                                <span class="badge badge-warning">Break</span>
+                                            {% elif slot.slot_type == 'tea_break' %}
+                                                <span class="badge badge-info">Tea Break</span>
+                                            {% elif slot.slot_type == 'lunch_break' %}
+                                                <span class="badge badge-danger">Lunch Break</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <form method="POST" action="{{ url_for('school.delete_timeslot', slot_id=slot.id) }}" style="display:inline;">
+                                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this period?')">Delete</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <p class="text-muted text-center py-4">No periods defined yet.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .nav-tabs {
+        border-bottom: 2px solid #dee2e6;
+    }
+    
+    .nav-tabs .nav-link {
+        color: #6c757d;
+        border: none;
+        border-bottom: 3px solid transparent;
+        padding: 0.75rem 1.5rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    
+    .nav-tabs .nav-link:hover {
+        color: #007bff;
+        border-bottom-color: #007bff;
+    }
+    
+    .nav-tabs .nav-link.active {
+        color: #007bff;
+        border-bottom-color: #007bff;
+        background-color: transparent;
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: #f8f9fa;
+    }
+</style>
+{% endblock %}

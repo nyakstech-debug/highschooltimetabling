@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}Generate Timetable - SchoolTimetable{% endblock %}
+
+{% block content %}
+<h2>Generate Timetable</h2>
+
+<div class="alert alert-info" role="alert">
+    <h4 class="alert-heading">Before generating a timetable, ensure:</h4>
+    <ul class="mb-0">
+        <li>All teachers have been added</li>
+        <li>All classes have been created</li>
+        <li>All subjects have been defined</li>
+        <li>Time slots have been configured</li>
+        <li>Teachers have been assigned to subjects</li>
+    </ul>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5>Generate New Timetable</h5>
+            </div>
+            <div class="card-body">
+                <p>Click the button below to automatically generate a fair and conflict-free timetable based on your configuration.</p>
+                <p class="text-muted">The system will:</p>
+                <ul>
+                    <li>Allocate each subject the specified number of lessons per week</li>
+                    <li>Respect double lesson requirements</li>
+                    <li>Handle concurrent subjects correctly</li>
+                    <li>Fairly distribute lessons across the week</li>
+                    <li>Ensure no teacher conflicts</li>
+                </ul>
+                
+                <form method="POST" class="mt-4">
+                    <button type="submit" class="btn btn-lg btn-success" onclick="return confirm('Generate new timetable? This will create a new timetable entry.')">
+                        Generate Timetable
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5>School Summary</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Teachers:</strong> {{ current_user.teachers|length }}</p>
+                <p><strong>Classes:</strong> {{ current_user.classes|length }}</p>
+                <p><strong>Subjects:</strong> {{ current_user.subjects|length }}</p>
+                <p><strong>Assignments:</strong> {{ current_user.teachers|length }}</p>
+                <hr>
+                <a href="{{ url_for('school.dashboard') }}" class="btn btn-primary btn-block">Back to Dashboard</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}Teacher Assignments - SchoolTimetable{% endblock %}
+
+{% block content %}
+<h2>Teacher Subject Class Assignments</h2>
+<p class="text-muted">Assign teachers to teach specific subjects to specific classes</p>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5>Create Assignment</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="form-group">
+                        <label for="teacher_id">Teacher</label>
+                        <select class="form-control" id="teacher_id" name="teacher_id" required>
+                            <option value="">Select a teacher...</option>
+                            {% for teacher in teachers %}
+                            <option value="{{ teacher.id }}">{{ teacher.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="subject_id">Subject</label>
+                        <select class="form-control" id="subject_id" name="subject_id" required>
+                            <option value="">Select a subject...</option>
+                            {% for subject in subjects %}
+                            <option value="{{ subject.id }}">{{ subject.name }} ({{ subject.code }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="class_id">Class</label>
+                        <select class="form-control" id="class_id" name="class_id" required>
+                            <option value="">Select a class...</option>
+                            {% for class in classes %}
+                            <option value="{{ class.id }}">{{ class.level }} - {{ class.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Create Assignment</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Current Assignments ({{ assignments|length }})</h5>
+                {% if assignments %}
+                <form method="POST" action="{{ url_for('school.delete_all_assignments') }}" style="display:inline;">
+                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete ALL assignments? This cannot be undone.')">Delete All</button>
+                </form>
+                {% endif %}
+            </div>
+            <div class="card-body">
+                {% if assignments %}
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover">
+                        <thead>
+                            <tr>
+                                <th>Teacher</th>
+                                <th>Subject</th>
+                                <th>Class</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for assignment in assignments %}
+                            <tr>
+                                <td><strong>{{ assignment.teacher.name }}</strong></td>
+                                <td>{{ assignment.subject.code }}</td>
+                                <td>{{ assignment.class_.level }} - {{ assignment.class_.name }}</td>
+                                <td>
+                                    <form method="POST" action="{{ url_for('school.delete_assignment', assignment_id=assignment.id) }}" style="display:inline;">
+                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete assignment?')">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted text-center py-4">No assignments created yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

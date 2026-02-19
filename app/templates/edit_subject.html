@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Subject - SchoolTimetable{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <h2>Edit Subject</h2>
+        <p class="text-muted">{{ subject.name }} ({{ subject.code }})</p>
+    </div>
+    <div class="col-md-4 text-right">
+        <a href="{{ url_for('school.subjects') }}" class="btn btn-secondary">Back to Subjects</a>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5>Subject Details</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="form-group">
+                        <label for="name">Subject Name</label>
+                        <input type="text" class="form-control" id="name" name="name" value="{{ subject.name }}" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="code">Subject Code</label>
+                        <input type="text" class="form-control" id="code" name="code" value="{{ subject.code }}" placeholder="e.g., MATH, ENG" required>
+                        <small class="form-text text-muted">Unique identifier for this subject</small>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="max_lessons_per_week">Total Lessons Per Week</label>
+                            <input type="number" class="form-control" id="max_lessons_per_week" name="max_lessons_per_week" value="{{ subject.max_lessons_per_week }}" min="1" max="10" required>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="double_lessons_per_week">Double Lessons Per Week</label>
+                            <input type="number" class="form-control" id="double_lessons_per_week" name="double_lessons_per_week" value="{{ subject.double_lessons_per_week }}" min="0" max="5">
+                            <small class="form-text text-muted">Consecutive double periods</small>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Offered For</label>
+                        <div class="alert alert-info">
+                            {% if subject.offered_for == 'grade10-12' %}
+                                <strong>Grade 10, 11, 12</strong>
+                            {% elif subject.offered_for == 'form3-4' %}
+                                <strong>Form 3, 4</strong>
+                            {% else %}
+                                <strong>Both (Grade 10-12 & Form 3-4)</strong>
+                            {% endif %}
+                        </div>
+                        <small class="form-text text-muted">This cannot be changed after creation. To change, delete and recreate the subject.</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                        <a href="{{ url_for('school.subjects') }}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5>Subject Information</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Subject Name:</strong><br><span class="text-muted">{{ subject.name }}</span></p>
+                <p><strong>Code:</strong><br><span class="text-muted">{{ subject.code }}</span></p>
+                <p><strong>Lessons Per Week:</strong><br><span class="text-muted">{{ subject.max_lessons_per_week }} periods</span></p>
+                <p><strong>Double Lessons:</strong><br>
+                    {% if subject.double_lessons_per_week > 0 %}
+                        <span class="badge badge-info">{{ subject.double_lessons_per_week }}</span>
+                    {% else %}
+                        <span class="text-muted">None</span>
+                    {% endif %}
+                </p>
+                <p><strong>Level:</strong><br>
+                    {% if subject.offered_for == 'grade10-12' %}
+                        <span class="badge badge-primary">Grades 10-12</span>
+                    {% elif subject.offered_for == 'form3-4' %}
+                        <span class="badge badge-success">Form 3-4</span>
+                    {% else %}
+                        <span class="badge badge-secondary">Both</span>
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+        
+        <div class="card mt-3">
+            <div class="card-header bg-warning text-white">
+                <h5>Danger Zone</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted small">Delete this subject and all related data</p>
+                <form method="POST" action="{{ url_for('school.delete_subject', subject_id=subject.id) }}">
+                    <button type="submit" class="btn btn-danger btn-block" onclick="return confirm('Are you sure you want to delete this subject? This action cannot be undone.')">Delete Subject</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
